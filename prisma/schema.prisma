@@ -1,0 +1,665 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// Enhanced Candidate Model (60+ fields including cultural intelligence)
+model Candidate {
+  id                    String   @id @default(cuid())
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  
+  // Basic Information
+  firstName            String
+  lastName             String
+  email                String   @unique
+  cellPhone            String?
+  nationality          String
+  currentLocation      String
+  dateOfBirth          DateTime?
+  gender               String?
+  maritalStatus        String?
+  
+  // Professional Information
+  currentPosition      String?
+  experience           Int?     // Years of experience
+  education            String?  // JSON string
+  technicalSkills      String?  // JSON array
+  languageProficiency  String?  // JSON object
+  certifications       String?  // JSON array
+  
+  // Cultural Intelligence Fields
+  culturalBackground   String?
+  workStylePreference  String?
+  communicationStyle   String?
+  adaptabilityScore    Float?
+  teamworkOrientation  String?
+  leadershipStyle      String?
+  conflictResolution   String?
+  timeManagement       String?
+  
+  // Japanese Cultural Alignment
+  waHarmonyAlignment   Float?   @default(0)
+  kaizenMindset        Float?   @default(0)
+  omotenashiService    Float?   @default(0)
+  bushidoDedication    Float?   @default(0)
+  nemawashiConsensus   Float?   @default(0)
+  
+  // Status and Tracking
+  candidateStatus      CandidateStatus @default(REGISTERED)
+  availabilityDate     DateTime?
+  salaryExpectation    Int?
+  preferredLocation    String?
+  visaStatus           String?
+  
+  // Relationships
+  applications         Application[]
+  culturalAssessments  CulturalAssessment[]
+  psychologicalAssessments PsychologicalAssessment[]
+  languageAssessments  LanguageAssessment[]
+  professionalAssessments ProfessionalAssessment[]
+  interviewSessions    InterviewSession[]
+  onboardingRecords    OnboardingRecord[]
+  performanceReviews   PerformanceReview[]
+  statusHistory        CandidateStatusHistory[]
+}
+
+// Enhanced Company Model (40+ fields including Japanese cultural alignment)
+model Company {
+  id                   String   @id @default(cuid())
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  
+  // Basic Information
+  companyName         String   @unique
+  industry            String
+  companySize         String
+  headquarters        String
+  website             String?
+  description         String?
+  
+  // Cultural Information
+  corporateCulture    String?  // JSON object
+  workEnvironment     String?
+  managementStyle     String?
+  communicationStyle  String?
+  diversityPolicy     String?
+  
+  // Japanese Cultural Alignment
+  waHarmonyImportance Float?   @default(0)
+  kaizenImplementation Float?  @default(0)
+  omotenashiStandards Float?   @default(0)
+  hierarchyStructure  String?
+  consensusDecisionMaking Float? @default(0)
+  
+  // Business Information
+  revenue             BigInt?
+  foundedYear         Int?
+  employeeCount       Int?
+  businessModel       String?
+  competitiveAdvantage String?
+  
+  // Requirements and Preferences
+  preferredCandidateProfile String? // JSON object
+  culturalRequirements String?      // JSON object
+  languageRequirements String?      // JSON array
+  
+  // Relationships
+  jobPostings         JobPosting[]
+  applications        Application[]
+  onboardingRecords   OnboardingRecord[]
+  performanceReviews  PerformanceReview[]
+}
+
+// Enhanced JobPosting Model (50+ fields including cultural requirements)
+model JobPosting {
+  id                  String   @id @default(cuid())
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  
+  // Basic Job Information
+  jobTitle           String
+  department         String?
+  location           String
+  employmentType     String
+  experienceLevel    String
+  
+  // Job Details
+  jobDescription     String
+  responsibilities   String?  // JSON array
+  requirements       String?  // JSON array
+  qualifications     String?  // JSON array
+  technicalSkills    String?  // JSON array
+  
+  // Compensation
+  salaryRangeMinimum Int?
+  salaryRangeMaximum Int?
+  benefits           String?  // JSON array
+  bonusStructure     String?
+  
+  // Cultural Requirements
+  culturalFitRequirements String? // JSON object with 47 dimensions
+  languageRequirements    String? // JSON object
+  communicationStyle      String?
+  teamworkExpectation     String?
+  leadershipExpectation   String?
+  
+  // Japanese Cultural Specifics
+  waHarmonyRequired      Float?   @default(0)
+  kaizenParticipation    Float?   @default(0)
+  omotenashiExpectation  Float?   @default(0)
+  hierarchyRespect       Float?   @default(0)
+  consensusBuilding      Float?   @default(0)
+  
+  // Status and Tracking
+  postingStatus      PostingStatus @default(active)
+  applicationDeadline DateTime?
+  startDate          DateTime?
+  urgencyLevel       String?
+  
+  // Relationships
+  companyId          String
+  company            Company @relation(fields: [companyId], references: [id])
+  applications       Application[]
+}
+
+// CulturalAssessment Model (47-dimension scoring)
+model CulturalAssessment {
+  id                    String   @id @default(cuid())
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  
+  candidateId          String
+  candidate            Candidate @relation(fields: [candidateId], references: [id])
+  
+  assessmentType       String   // comprehensive, quick, interview-based
+  assessmentDate       DateTime @default(now())
+  
+  // Overall Scores
+  overallScore         Float
+  culturalFitPrediction Float
+  integrationTimelineDays Int
+  
+  // 47 Cultural Dimensions (Japanese Business Culture)
+  // Core Philosophy Dimensions
+  waHarmonyScore       Float    @default(0)
+  kaizenImprovementScore Float  @default(0)
+  omotenashiServiceScore Float  @default(0)
+  bushidoDedicationScore Float  @default(0)
+  nemawashiConsensusScore Float @default(0)
+  
+  // Communication Dimensions
+  honneTatemaeBalance  Float    @default(0)
+  indirectCommunication Float   @default(0)
+  nonverbalAwareness   Float    @default(0)
+  silenceComfort       Float    @default(0)
+  contextualUnderstanding Float @default(0)
+  
+  // Hierarchy and Respect Dimensions
+  senpaiKohaiRespect   Float    @default(0)
+  authorityRecognition Float    @default(0)
+  formalityAdherence   Float    @default(0)
+  statusAwareness      Float    @default(0)
+  hierarchyNavigation  Float    @default(0)
+  
+  // Group Dynamics Dimensions
+  groupHarmonyPriority Float    @default(0)
+  collectiveDecisionMaking Float @default(0)
+  consensusBuilding    Float    @default(0)
+  teamLoyalty          Float    @default(0)
+  groupAccountability  Float    @default(0)
+  
+  // Work Ethics Dimensions
+  dedicationToWork     Float    @default(0)
+  qualityFocus         Float    @default(0)
+  continuousImprovement Float   @default(0)
+  attentionToDetail    Float    @default(0)
+  processAdherence     Float    @default(0)
+  
+  // Time and Punctuality Dimensions
+  punctualityImportance Float   @default(0)
+  timeRespect          Float    @default(0)
+  scheduleAdherence    Float    @default(0)
+  planningOrientation  Float    @default(0)
+  deadlineCommitment   Float    @default(0)
+  
+  // Relationship Building Dimensions
+  relationshipInvestment Float  @default(0)
+  trustBuilding        Float    @default(0)
+  longTermOrientation  Float    @default(0)
+  loyaltyDemonstration Float    @default(0)
+  networkMaintenance   Float    @default(0)
+  
+  // Adaptability Dimensions
+  changeAcceptance     Float    @default(0)
+  flexibilityInApproach Float   @default(0)
+  learningOrientation  Float    @default(0)
+  culturalAdaptability Float    @default(0)
+  resilienceInChallenges Float  @default(0)
+  
+  // Professional Conduct Dimensions
+  professionalEtiquette Float   @default(0)
+  businessCardProtocol Float    @default(0)
+  meetingParticipation Float    @default(0)
+  presentationSkills   Float    @default(0)
+  clientServiceOrientation Float @default(0)
+  
+  // Innovation and Creativity Dimensions
+  creativeThinking     Float    @default(0)
+  innovationBalance    Float    @default(0)
+  riskAssessment       Float    @default(0)
+  
+  // Stored as JSON for flexibility
+  dimensionScores      String?  // JSON object with all 47 scores
+  culturalTrainingNeeded String? // JSON array of recommendations
+  assessmentNotes      String?
+}
+
+// PsychologicalAssessment Model
+model PsychologicalAssessment {
+  id                   String   @id @default(cuid())
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  
+  candidateId         String
+  candidate           Candidate @relation(fields: [candidateId], references: [id])
+  
+  assessmentType      String   // personality, cognitive, emotional-intelligence
+  assessmentDate      DateTime @default(now())
+  
+  // Personality Traits (Big Five)
+  openness            Float?
+  conscientiousness   Float?
+  extraversion        Float?
+  agreeableness       Float?
+  neuroticism         Float?
+  
+  // Cognitive Abilities
+  logicalReasoning    Float?
+  numericalAbility    Float?
+  verbalAbility       Float?
+  spatialAbility      Float?
+  memoryCapacity      Float?
+  
+  // Emotional Intelligence
+  selfAwareness       Float?
+  selfRegulation      Float?
+  motivation          Float?
+  empathy             Float?
+  socialSkills        Float?
+  
+  // Work-related Traits
+  stressResilience    Float?
+  teamworkAbility     Float?
+  leadershipPotential Float?
+  adaptability        Float?
+  problemSolving      Float?
+  
+  overallScore        Float
+  recommendations     String? // JSON array
+  assessmentNotes     String?
+}
+
+// LanguageAssessment Model
+model LanguageAssessment {
+  id                  String   @id @default(cuid())
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  
+  candidateId        String
+  candidate          Candidate @relation(fields: [candidateId], references: [id])
+  
+  language           String   // Japanese, English, etc.
+  assessmentDate     DateTime @default(now())
+  assessmentType     String   // JLPT, TOEIC, interview, etc.
+  
+  // Language Skills
+  speakingLevel      String   // N1-N5 for Japanese, A1-C2 for CEFR
+  listeningLevel     String
+  readingLevel       String
+  writingLevel       String
+  
+  // Scores
+  overallScore       Float
+  speakingScore      Float?
+  listeningScore     Float?
+  readingScore       Float?
+  writingScore       Float?
+  
+  // Business Language Skills
+  businessCommunication Float?
+  technicalVocabulary   Float?
+  presentationSkills    Float?
+  negotiationSkills     Float?
+  
+  certificationLevel String?
+  certificationDate  DateTime?
+  assessmentNotes    String?
+}
+
+// ProfessionalAssessment Model
+model ProfessionalAssessment {
+  id                 String   @id @default(cuid())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  candidateId       String
+  candidate         Candidate @relation(fields: [candidateId], references: [id])
+  
+  assessmentType    String   // technical, managerial, industry-specific
+  assessmentDate    DateTime @default(now())
+  
+  // Technical Skills
+  technicalProficiency Float?
+  toolsAndTechnologies String? // JSON array
+  industryKnowledge    Float?
+  problemSolvingAbility Float?
+  innovationCapability Float?
+  
+  // Professional Skills
+  projectManagement    Float?
+  teamLeadership       Float?
+  clientManagement     Float?
+  strategicThinking    Float?
+  analyticalSkills     Float?
+  
+  // Industry-Specific Skills
+  domainExpertise      Float?
+  regulatoryKnowledge  Float?
+  marketUnderstanding  Float?
+  competitorAwareness  Float?
+  
+  overallScore         Float
+  skillGaps            String? // JSON array
+  developmentPlan      String? // JSON object
+  assessmentNotes      String?
+}
+
+// InterviewSession Model
+model InterviewSession {
+  id                   String   @id @default(cuid())
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  
+  candidateId         String
+  candidate           Candidate @relation(fields: [candidateId], references: [id])
+  
+  applicationId       String?
+  application         Application? @relation(fields: [applicationId], references: [id])
+  
+  interviewType       String   // phone, video, in-person, panel
+  interviewRound      Int      // 1st, 2nd, final, etc.
+  interviewDate       DateTime
+  duration            Int?     // minutes
+  
+  // Interview Results
+  technicalScore      Float?
+  culturalFitScore    Float?
+  communicationScore  Float?
+  motivationScore     Float?
+  overallScore        Float
+  
+  // Feedback
+  strengths           String?  // JSON array
+  weaknesses          String?  // JSON array
+  recommendations     String?  // JSON array
+  interviewNotes      String?
+  
+  // Decision
+  recommendation      String   // hire, reject, next-round
+  interviewerName     String?
+  interviewerRole     String?
+}
+
+// OnboardingRecord Model
+model OnboardingRecord {
+  id                  String   @id @default(cuid())
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  
+  candidateId        String
+  candidate          Candidate @relation(fields: [candidateId], references: [id])
+  
+  companyId          String
+  company            Company @relation(fields: [companyId], references: [id])
+  
+  startDate          DateTime
+  onboardingStatus   String   // in-progress, completed, delayed
+  
+  // Onboarding Progress
+  documentationComplete Boolean @default(false)
+  systemAccessGranted   Boolean @default(false)
+  trainingCompleted     Boolean @default(false)
+  culturalOrientationDone Boolean @default(false)
+  mentorAssigned        Boolean @default(false)
+  
+  // Cultural Integration
+  culturalAdaptationScore Float?
+  integrationChallenges   String? // JSON array
+  supportProvided         String? // JSON array
+  
+  // Timeline
+  expectedCompletionDate  DateTime?
+  actualCompletionDate    DateTime?
+  
+  onboardingNotes        String?
+}
+
+// PerformanceReview Model
+model PerformanceReview {
+  id                     String   @id @default(cuid())
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  
+  candidateId           String
+  candidate             Candidate @relation(fields: [candidateId], references: [id])
+  
+  companyId             String
+  company               Company @relation(fields: [companyId], references: [id])
+  
+  reviewPeriod          String   // Q1-2024, Annual-2024, etc.
+  reviewDate            DateTime
+  reviewType            String   // quarterly, annual, probation
+  
+  // Performance Scores
+  technicalPerformance  Float?
+  culturalIntegration   Float?
+  teamCollaboration     Float?
+  communicationSkills   Float?
+  goalAchievement       Float?
+  overallPerformance    Float
+  
+  // Cultural Adaptation
+  culturalFitImprovement Float?
+  japaneseBusinessEtiquette Float?
+  teamHarmonyContribution Float?
+  
+  // Feedback
+  achievements          String?  // JSON array
+  areasForImprovement   String?  // JSON array
+  developmentGoals      String?  // JSON array
+  
+  reviewerName          String?
+  reviewerRole          String?
+  reviewNotes           String?
+}
+
+// CandidateStatusHistory Model
+model CandidateStatusHistory {
+  id                    String   @id @default(cuid())
+  createdAt            DateTime @default(now())
+  
+  candidateId          String
+  candidate            Candidate @relation(fields: [candidateId], references: [id])
+  
+  previousStatus       CandidateStatus
+  newStatus            CandidateStatus
+  changeReason         String?
+  changedBy            String?
+  notes                String?
+}
+
+// Application Model (Enhanced)
+model Application {
+  id                   String   @id @default(cuid())
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  
+  candidateId         String
+  candidate           Candidate @relation(fields: [candidateId], references: [id])
+  
+  companyId           String
+  company             Company @relation(fields: [companyId], references: [id])
+  
+  jobPostingId        String
+  jobPosting          JobPosting @relation(fields: [jobPostingId], references: [id])
+  
+  applicationStatus   ApplicationStatus @default(pending)
+  applicationDate     DateTime @default(now())
+  
+  // Matching Scores
+  overallMatchScore   Float?
+  technicalMatchScore Float?
+  culturalFitScore    Float?
+  languageMatchScore  Float?
+  experienceMatchScore Float?
+  
+  // Application Materials
+  resumeUrl           String?
+  coverLetterUrl      String?
+  portfolioUrl        String?
+  
+  // Interview Process
+  interviewSessions   InterviewSession[]
+  
+  // Decision
+  finalDecision       String?
+  decisionDate        DateTime?
+  decisionReason      String?
+  
+  applicationNotes    String?
+}
+
+// Enhanced MarketIntelligence Model
+model MarketIntelligence {
+  id                  String   @id @default(cuid())
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  
+  dataType           String   // salary, demand, skills, cultural-trends
+  industry           String
+  location           String
+  timeframe          String   // Q1-2024, 2024, etc.
+  
+  // Market Data
+  averageSalary      Float?
+  salaryRange        String?  // JSON object {min, max, median}
+  demandLevel        String   // high, medium, low
+  supplyLevel        String   // high, medium, low
+  
+  // Skills Intelligence
+  inDemandSkills     String?  // JSON array
+  emergingSkills     String?  // JSON array
+  decliningSkills    String?  // JSON array
+  
+  // Cultural Intelligence
+  culturalTrends     String?  // JSON object
+  adaptationChallenges String? // JSON array
+  successFactors     String?  // JSON array
+  
+  dataSource         String?
+  reliability        Float?   // 0-1 confidence score
+  marketNotes        String?
+}
+
+// Enhanced SystemMetrics Model
+model SystemMetrics {
+  id                 String   @id @default(cuid())
+  createdAt         DateTime @default(now())
+  
+  metricType        String   // performance, usage, accuracy
+  metricName        String
+  metricValue       Float
+  metricUnit        String?
+  
+  // Context
+  timeframe         String?
+  category          String?
+  subcategory       String?
+  
+  // Metadata
+  calculationMethod String?
+  dataPoints        Int?
+  confidence        Float?
+  
+  metricNotes       String?
+}
+
+// ReportGeneration Model
+model ReportGeneration {
+  id                String   @id @default(cuid())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  
+  reportType       String   // cultural-assessment, market-analysis, performance
+  reportTitle      String
+  reportFormat     String   // PDF, Excel, JSON
+  
+  // Report Parameters
+  candidateId      String?
+  companyId        String?
+  dateRange        String?  // JSON object {start, end}
+  filters          String?  // JSON object
+  
+  // Generation Status
+  generationStatus String   // pending, in-progress, completed, failed
+  generatedAt      DateTime?
+  reportUrl        String?
+  reportSize       Int?     // bytes
+  
+  // Report Content Summary
+  keyFindings      String?  // JSON array
+  recommendations  String?  // JSON array
+  dataPoints       Int?
+  
+  requestedBy      String?
+  reportNotes      String?
+}
+
+// Enums
+enum CandidateStatus {
+  REGISTERED
+  AVAILABLE
+  INTERVIEWING
+  OFFERED
+  HIRED
+  UNAVAILABLE
+  ARCHIVED
+}
+
+enum ApplicationStatus {
+  pending
+  reviewing
+  interviewing
+  offer
+  hired
+  rejected
+  withdrawn
+}
+
+enum PostingStatus {
+  draft
+  active
+  paused
+  filled
+  cancelled
+  expired
+}
+
