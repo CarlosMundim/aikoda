@@ -30,7 +30,7 @@ aiKODA is an enterprise-grade HR platform that leverages cultural intelligence a
 
 - **Frontend**: Next.js 15.4.1, React 19.1.0, TypeScript
 - **Styling**: Tailwind CSS 4.x, SAP Fiori Design System
-- **Database**: PostgreSQL with Prisma ORM
+- **Database**: Supabase (PostgreSQL) with Prisma ORM
 - **Authentication**: JWT + bcrypt
 - **AI Services**: Hugging Face Transformers, Google Gemini
 - **Deployment**: Docker, Vercel, nginx
@@ -73,7 +73,7 @@ aikoda/
 
 ### Prerequisites
 - Node.js 18+ 
-- PostgreSQL
+- Supabase account (free tier available)
 - Git
 
 ### Installation
@@ -105,8 +105,10 @@ Visit `http://localhost:3000` to see the platform.
 Create `.env.local` with:
 
 ```bash
-# Database
-DATABASE_URL="postgresql://username:password@localhost:5432/aikoda"
+# Database (Supabase)
+DATABASE_URL="postgresql://postgres:[YOUR-PASSWORD]@db.[YOUR-PROJECT-REF].supabase.co:5432/postgres"
+NEXT_PUBLIC_SUPABASE_URL="https://[YOUR-PROJECT-REF].supabase.co"
+NEXT_PUBLIC_SUPABASE_ANON_KEY="your-anon-key"
 
 # AI Services (Free APIs)
 HUGGING_FACE_TOKEN="your_hf_token"
@@ -114,10 +116,8 @@ GEMINI_API_KEY="your_gemini_key"
 
 # JWT Secret
 JWT_SECRET="your_secure_jwt_secret"
-
-# Next.js
-NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="your_nextauth_secret"
+NEXTAUTH_URL="http://localhost:3000"
 ```
 
 ## 📊 API Endpoints
@@ -157,10 +157,26 @@ docker run -p 3000:3000 aikoda
 
 ## 🚀 Production Deployment
 
-### Vercel (Recommended)
-1. Connect repository to Vercel
-2. Add environment variables
-3. Deploy automatically on push
+### Supabase + Vercel (Recommended)
+
+#### 1. Setup Supabase Database
+```bash
+# Create new project at https://supabase.com
+# Copy your project URL and keys to .env.local
+# Run database migrations
+npx prisma db push
+```
+
+#### 2. Deploy to Vercel
+```bash
+# Connect repository to Vercel
+# Add all environment variables from .env.example
+# Deploy automatically on push
+```
+
+#### 3. Configure Domain
+- Add aikoda.dev domain in Vercel dashboard
+- Update DNS records to point to Vercel
 
 ### Self-hosted
 ```bash
