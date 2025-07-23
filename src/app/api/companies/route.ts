@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
         companyName: body.companyName,
         industry: body.industry,
         companySize: body.companySize,
-        // headquartersLocation: body.headquartersLocation, // Field may not exist in schema
+        headquarters: body.headquarters || body.headquartersLocation || 'Tokyo, Japan', // Required field
         description: body.description,
         // establishedYear: body.establishedYear, // Field may not exist in schema
         // website: body.website, // Field may not exist in schema
