@@ -68,17 +68,20 @@ export async function POST(request: NextRequest) {
     const { candidateId, jobId, analysisType } = body
     
     if (analysisType === 'job_candidates') {
-      // Find candidates for a specific job
-      const job = await prisma.job.findUnique({
-        where: { id: parseInt(jobId) },
-        include: {
-          company: true
-        }
-      })
+      // DISABLED - No Job model in schema yet
+      return NextResponse.json({ error: 'Job matching temporarily disabled - no job model' }, { status: 501 })
       
-      if (!job) {
-        return NextResponse.json({ error: 'Job not found' }, { status: 404 })
-      }
+      // Find candidates for a specific job
+      // const job = await prisma.job.findUnique({
+      //   where: { id: parseInt(jobId) },
+      //   include: {
+      //     company: true
+      //   }
+      // })
+      
+      // if (!job) {
+      //   return NextResponse.json({ error: 'Job not found' }, { status: 404 })
+      // }
       
       let candidates = []
       try {
@@ -143,11 +146,13 @@ export async function POST(request: NextRequest) {
       
       let jobs = []
       try {
-        jobs = await prisma.job.findMany({
-          where: { status: 'active' },
-          include: { company: true },
-          take: 10
-        })
+        // DISABLED - No Job model in schema
+        // jobs = await prisma.job.findMany({
+        //   where: { status: 'active' },
+        //   include: { company: true },
+        //   take: 10
+        // })
+        throw new Error('Job model disabled')
       } catch (dbError) {
         // Mock jobs if database fails
         jobs = [
