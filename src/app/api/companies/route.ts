@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
     const mockCompanies = [
       {
         id: 1,
-        companyName: 'Sankyo Corporation',
+        companyName: 'TechCorp Solutions',
         industry: 'Technology',
         companySize: '1000-5000',
         headquartersLocation: 'Tokyo, Japan',

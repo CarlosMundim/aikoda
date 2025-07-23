@@ -6,15 +6,15 @@ async function main() {
   console.log('🌱 Seeding database with sample data...')
   
   // Create companies
-  const sankyo = await prisma.company.create({
+  const techCorp = await prisma.company.create({
     data: {
-      companyName: 'Sankyo Corporation',
+      companyName: 'TechCorp Solutions',
       industry: 'Technology',
       companySize: '1000-5000',
       headquarters: 'Tokyo, Japan',
       description: 'Leading technology company specializing in enterprise solutions',
       foundedYear: 1995,
-      website: 'https://sankyo-corp.jp'
+      website: 'https://techcorp-solutions.com'
     }
   })
   
@@ -26,7 +26,7 @@ async function main() {
       headquarters: 'Osaka, Japan',
       description: 'International financial services company',
       foundedYear: 2010,
-      website: 'https://global-innovation.co.jp'
+      website: 'https://global-innovation.com'
     }
   })
   
@@ -36,7 +36,7 @@ async function main() {
   const job1 = await prisma.jobPosting.create({
     data: {
       jobTitle: 'Senior Software Engineer',
-      companyId: sankyo.id,
+      companyId: techCorp.id,
       department: 'Engineering',
       location: 'Tokyo, Japan',
       employmentType: 'Full-time',
@@ -138,7 +138,7 @@ async function main() {
   console.log('🎉 Database seeding completed successfully!')
   console.log(`
 📊 Sample Data Created:
-- 2 Companies (Sankyo Corporation, Global Innovation Ltd.)
+- 2 Companies (TechCorp Solutions, Global Innovation Ltd.)
 - 2 Job Openings (Tech and HR roles)
 - 2 Candidates (Japanese and International talent)
 - 2 Cultural Intelligence Assessments

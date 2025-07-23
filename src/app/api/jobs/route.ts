@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
         urgencyLevel: 'high',
         remoteWorkOptions: 'hybrid',
         company: {
-          companyName: 'Sankyo Corporation',
+          companyName: 'TechCorp Solutions',
           industry: 'Technology'
         },
         createdAt: new Date(),
@@ -104,7 +104,7 @@ export async function GET(request: NextRequest) {
         urgencyLevel: 'high',
         remoteWorkOptions: 'remote',
         company: {
-          companyName: 'Sankyo Corporation',
+          companyName: 'TechCorp Solutions',
           industry: 'Technology'
         },
         createdAt: new Date(),

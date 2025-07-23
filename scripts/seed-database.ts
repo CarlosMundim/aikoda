@@ -6,15 +6,15 @@ async function main() {
   console.log('🌱 Seeding database with sample data...')
   
   // Create companies
-  const sankyo = await prisma.company.create({
+  const techCorp = await prisma.company.create({
     data: {
-      companyName: 'Sankyo Corporation',
+      companyName: 'TechCorp Solutions',
       industry: 'Technology',
       companySize: '1000-5000',
       headquarters: 'Tokyo, Japan',
       description: 'Leading technology company specializing in enterprise solutions and AI-driven platforms',
       foundedYear: 1995,
-      website: 'https://sankyo-corp.jp'
+      website: 'https://techcorp-solutions.com'
     }
   })
   
@@ -26,7 +26,7 @@ async function main() {
       headquarters: 'Osaka, Japan',
       description: 'International financial services with focus on cultural integration and sustainable growth',
       foundedYear: 2010,
-      website: 'https://global-innovation.co.jp'
+      website: 'https://global-innovation.com'
     }
   })
   
@@ -38,7 +38,7 @@ async function main() {
       headquarters: 'Kyoto, Japan',
       description: 'Cutting-edge AI startup developing next-generation machine learning solutions',
       foundedYear: 2020,
-      website: 'https://nextgen-ai.jp'
+      website: 'https://nextgen-ai.com'
     }
   })
   
@@ -48,7 +48,7 @@ async function main() {
   const jobs = [
     {
       title: 'Senior Software Engineer',
-      companyId: sankyo.id,
+      companyId: techCorp.id,
       department: 'Engineering',
       location: 'Tokyo, Japan',
       employmentType: 'Full-time',
@@ -129,7 +129,7 @@ async function main() {
     },
     {
       title: 'Data Scientist',
-      companyId: sankyo.id,
+      companyId: techCorp.id,
       department: 'Analytics',
       location: 'Tokyo, Japan',
       employmentType: 'Full-time',
@@ -391,7 +391,7 @@ async function main() {
   console.log('🎉 Database seeding completed successfully!')
   console.log(`
 📊 Sample Data Created:
-- ${companies.length} Companies (Sankyo Corporation, Global Innovation Ltd., NextGen AI Solutions)
+- 3 Companies (TechCorp Solutions, Global Innovation Ltd., NextGen AI Solutions)
 - ${jobs.length} Job Openings (Tech, HR, AI Research roles)
 - ${candidates.length} Candidates (Japanese and International talent)
 - ${culturalAssessments.length} Cultural Intelligence Assessments

@@ -156,7 +156,7 @@ export async function POST(request: NextRequest) {
             location: 'Tokyo, Japan',
             requiredSkills: JSON.stringify(['JavaScript', 'React']),
             culturalRequirements: JSON.stringify({ teamwork: 85, communication: 80 }),
-            company: { companyName: 'Sankyo Corporation' }
+            company: { companyName: 'TechCorp Solutions' }
           }
         ]
       }
