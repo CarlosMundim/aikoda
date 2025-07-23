@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
             jobTitle: job.jobTitle,
             company: job.company?.companyName,
             matchScore: matchResult.overallScore,
-            skillsMatch: matchResult.skillsMatch,
+            skillsMatch: matchResult.technicalMatch,
             culturalFit: matchResult.culturalFit,
             recommendations: matchResult.recommendations
           })
