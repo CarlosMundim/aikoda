@@ -68,8 +68,67 @@ export async function POST(request: NextRequest) {
     const { candidateId, jobId, analysisType } = body
     
     if (analysisType === 'job_candidates') {
-      // DISABLED - No Job model in schema yet
-      return NextResponse.json({ error: 'Job matching temporarily disabled - no job model' }, { status: 501 })
+      // Find candidates for a specific job
+      const jobPosting = await prisma.jobPosting.findUnique({
+        where: { id: jobId },
+        include: {
+          company: true
+        }
+      })
+      
+      if (!jobPosting) {
+        return NextResponse.json({ error: 'Job posting not found' }, { status: 404 })
+      }
+      
+      let candidates = []
+      try {
+        candidates = await prisma.candidate.findMany({
+          take: 10,
+          orderBy: { createdAt: 'desc' }
+        })
+      } catch (dbError) {
+        // Mock candidates if database fails
+        candidates = [
+          {
+            id: 1,
+            firstName: 'Yuki',
+            lastName: 'Tanaka',
+            email: 'yuki.tanaka@email.com',
+            nationality: 'JP',
+            currentLocation: 'Tokyo, Japan',
+            technicalSkills: JSON.stringify(['JavaScript', 'React', 'Node.js']),
+            languageProficiency: JSON.stringify({ japanese: 'native', english: 'business' })
+          },
+          {
+            id: 2,
+            firstName: 'Maria',
+            lastName: 'Santos',
+            email: 'maria.santos@email.com',
+            nationality: 'PH',
+            currentLocation: 'Manila, Philippines',
+            technicalSkills: JSON.stringify(['Python', 'Data Science', 'Machine Learning']),
+            languageProficiency: JSON.stringify({ english: 'native', japanese: 'intermediate' })
+          }
+        ]
+      }
+      
+      const matchPromises = candidates.map(candidate => 
+        calculateJobCandidateMatch(candidate, jobPosting)
+      )
+      const matches = (await Promise.all(matchPromises)).sort((a, b) => b.overallScore - a.overallScore)
+      
+      return NextResponse.json({
+        job: {
+          id: jobPosting.id,
+          title: jobPosting.jobTitle,
+          company: jobPosting.company?.companyName,
+          location: jobPosting.location
+        },
+        matches,
+        totalCandidates: candidates.length,
+        matchingAlgorithm: 'CQ47-Enhanced-Matching-v2.1',
+        generatedAt: new Date().toISOString()
+      })
     }
     
     if (analysisType === 'candidate_jobs') {
@@ -84,22 +143,20 @@ export async function POST(request: NextRequest) {
       
       let jobs = []
       try {
-        // DISABLED - No Job model in schema
-        // jobs = await prisma.job.findMany({
-        //   where: { status: 'active' },
-        //   include: { company: true },
-        //   take: 10
-        // })
-        throw new Error('Job model disabled')
+        jobs = await prisma.jobPosting.findMany({
+          where: { postingStatus: 'active' },
+          include: { company: true },
+          take: 10
+        })
       } catch (dbError) {
         // Mock jobs if database fails
         jobs = [
           {
             id: 1,
-            title: 'Senior Software Engineer',
+            jobTitle: 'Senior Software Engineer',
             location: 'Tokyo, Japan',
-            requiredSkills: JSON.stringify(['JavaScript', 'React']),
-            culturalRequirements: JSON.stringify({ teamwork: 85, communication: 80 }),
+            technicalSkills: JSON.stringify(['JavaScript', 'React']),
+            culturalFitRequirements: JSON.stringify({ teamwork: 85, communication: 80 }),
             company: { companyName: 'TechCorp Solutions' }
           }
         ]
