@@ -70,68 +70,6 @@ export async function POST(request: NextRequest) {
     if (analysisType === 'job_candidates') {
       // DISABLED - No Job model in schema yet
       return NextResponse.json({ error: 'Job matching temporarily disabled - no job model' }, { status: 501 })
-      
-      // Find candidates for a specific job
-      // const job = await prisma.job.findUnique({
-      //   where: { id: parseInt(jobId) },
-      //   include: {
-      //     company: true
-      //   }
-      // })
-      
-      // if (!job) {
-      //   return NextResponse.json({ error: 'Job not found' }, { status: 404 })
-      // }
-      
-      let candidates = []
-      try {
-        candidates = await prisma.candidate.findMany({
-          take: 10,
-          orderBy: { createdAt: 'desc' }
-        })
-      } catch (dbError) {
-        // Mock candidates if database fails
-        candidates = [
-          {
-            id: 1,
-            firstName: 'Yuki',
-            lastName: 'Tanaka',
-            email: 'yuki.tanaka@email.com',
-            nationality: 'JP',
-            currentLocation: 'Tokyo, Japan',
-            technicalSkills: JSON.stringify(['JavaScript', 'React', 'Node.js']),
-            languageProficiency: JSON.stringify({ japanese: 'native', english: 'business' })
-          },
-          {
-            id: 2,
-            firstName: 'Maria',
-            lastName: 'Santos',
-            email: 'maria.santos@email.com',
-            nationality: 'PH',
-            currentLocation: 'Manila, Philippines',
-            technicalSkills: JSON.stringify(['Python', 'Data Science', 'Machine Learning']),
-            languageProficiency: JSON.stringify({ english: 'native', japanese: 'intermediate' })
-          }
-        ]
-      }
-      
-      const matchPromises = candidates.map(candidate => 
-        calculateJobCandidateMatch(candidate, job)
-      )
-      const matches = (await Promise.all(matchPromises)).sort((a, b) => b.overallScore - a.overallScore)
-      
-      return NextResponse.json({
-        job: {
-          id: job.id,
-          title: job.title,
-          company: job.company?.companyName,
-          location: job.location
-        },
-        matches,
-        totalCandidates: candidates.length,
-        matchingAlgorithm: 'CQ47-Enhanced-Matching-v2.1',
-        generatedAt: new Date().toISOString()
-      })
     }
     
     if (analysisType === 'candidate_jobs') {
