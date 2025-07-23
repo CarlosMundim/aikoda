@@ -144,14 +144,28 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `
+              // Simple client-side logger for development
+              const clientLogger = {
+                info: (msg, data) => {
+                  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                    console.log('[Client]', msg, data || '');
+                  }
+                },
+                error: (msg, error) => {
+                  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                    console.error('[Client]', msg, error || '');
+                  }
+                }
+              };
+              
               if ('serviceWorker' in navigator) {
                 window.addEventListener('load', function() {
                   navigator.serviceWorker.register('/sw.js')
                     .then(function(registration) {
-                      console.log('SW registered: ', registration);
+                      clientLogger.info('SW registered:', registration);
                     })
                     .catch(function(registrationError) {
-                      console.log('SW registration failed: ', registrationError);
+                      clientLogger.error('SW registration failed:', registrationError);
                     });
                 });
               }
@@ -211,8 +225,8 @@ export default function RootLayout({
                   setTimeout(function() {
                     const perfData = performance.getEntriesByType('navigation')[0];
                     if (perfData) {
-                      console.log('Page load time:', perfData.loadEventEnd - perfData.loadEventStart, 'ms');
-                      console.log('DOM content loaded:', perfData.domContentLoadedEventEnd - perfData.domContentLoadedEventStart, 'ms');
+                      clientLogger.info('Page load time:', (perfData.loadEventEnd - perfData.loadEventStart) + 'ms');
+                      clientLogger.info('DOM content loaded:', (perfData.domContentLoadedEventEnd - perfData.domContentLoadedEventStart) + 'ms');
                     }
                   }, 0);
                 });
@@ -221,13 +235,13 @@ export default function RootLayout({
               // Connection monitoring
               if ('connection' in navigator) {
                 const connection = navigator.connection;
-                console.log('Network type:', connection.effectiveType);
-                console.log('Downlink speed:', connection.downlink, 'Mbps');
+                clientLogger.info('Network type:', connection.effectiveType);
+                clientLogger.info('Downlink speed:', connection.downlink + ' Mbps');
               }
 
               // Memory monitoring (Chrome only)
               if ('memory' in performance) {
-                console.log('Memory usage:', {
+                clientLogger.info('Memory usage:', {
                   used: Math.round(performance.memory.usedJSHeapSize / 1048576) + ' MB',
                   total: Math.round(performance.memory.totalJSHeapSize / 1048576) + ' MB',
                   limit: Math.round(performance.memory.jsHeapSizeLimit / 1048576) + ' MB'

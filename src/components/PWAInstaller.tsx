@@ -1,5 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react'
+import { logger } from '@/lib/logger'
 
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[]
@@ -100,15 +101,15 @@ export function PWAInstaller({ language }: PWAInstallerProps) {
       const { outcome } = await deferredPrompt.userChoice
       
       if (outcome === 'accepted') {
-        console.log('User accepted the install prompt')
+        logger.info('User accepted the install prompt')
       } else {
-        console.log('User dismissed the install prompt')
+        logger.info('User dismissed the install prompt')
       }
       
       setDeferredPrompt(null)
       setShowInstallPrompt(false)
     } catch (error) {
-      console.error('Error during installation:', error)
+      logger.error('Error during installation:', { error })
     }
   }
 
@@ -192,7 +193,7 @@ export function usePWA() {
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js')
         .then((reg) => {
-          console.log('Service Worker registered:', reg)
+          logger.info('Service Worker registered:', { registration: reg })
           setRegistration(reg)
 
           // Check for updates
@@ -208,7 +209,7 @@ export function usePWA() {
           })
         })
         .catch((error) => {
-          console.error('Service Worker registration failed:', error)
+          logger.error('Service Worker registration failed:', { error })
         })
     }
 

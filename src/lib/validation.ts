@@ -27,7 +27,7 @@ export interface CulturalResponse {
   evidence?: string
 }
 
-export function validateAndSanitize<T>(data: any, schema: any): ValidationResult<T> {
+export function validateAndSanitize<T>(data: unknown, schema: unknown): ValidationResult<T> {
   try {
     // Basic validation for candidate data
     if (schema === candidateSchema) {
@@ -46,8 +46,19 @@ export function validateAndSanitize<T>(data: any, schema: any): ValidationResult
   }
 }
 
-function validateCandidateData(data: any): ValidationResult<CandidateSchema> {
+function isRecord(data: unknown): data is Record<string, any> {
+  return typeof data === 'object' && data !== null && !Array.isArray(data)
+}
+
+function validateCandidateData(data: unknown): ValidationResult<CandidateSchema> {
   const errors: string[] = []
+  
+  if (!isRecord(data)) {
+    return {
+      success: false,
+      error: 'Invalid data format'
+    }
+  }
   
   // Required fields
   if (!data.name || typeof data.name !== 'string' || data.name.trim().length === 0) {

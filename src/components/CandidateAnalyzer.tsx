@@ -4,6 +4,7 @@ import { SAPCard } from './SAPCard'
 import { SAPButton } from './SAPButton'
 import { SAPInput } from './SAPInput'
 import { SAPSelect } from './SAPSelect'
+import { logger } from '@/lib/logger'
 
 interface CandidateInput {
   firstName: string
@@ -13,8 +14,16 @@ interface CandidateInput {
   nationality: string
   technicalSkills: string[]
   languageProficiency: Record<string, string>
-  educationRecords: any[]
+  educationRecords: EducationRecord[]
   culturalResponses?: CulturalResponse[]
+}
+
+interface EducationRecord {
+  institution: string
+  degree: string
+  fieldOfStudy: string
+  graduationYear: number
+  gpa?: number
 }
 
 interface CulturalResponse {
@@ -134,7 +143,7 @@ export function CandidateAnalyzer({ language }: CandidateAnalyzerProps) {
       setAnalysisResult(result)
       setCurrentStep(3)
     } catch (error) {
-      console.error('Analysis failed:', error)
+      logger.error('Analysis failed:', { error })
       // Mock result for development
       setAnalysisResult({
         candidateId: 'mock-id',

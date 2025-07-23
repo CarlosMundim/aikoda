@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { logger } from '@/lib/logger'
 import './App.css'
 
 // Core Layout Components
@@ -49,7 +50,7 @@ function App() {
         
         setIsLoading(false)
       } catch (error) {
-        console.error('App initialization error:', error)
+        logger.error('App initialization error:', { error })
         setIsLoading(false)
       }
     }

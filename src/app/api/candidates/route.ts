@@ -1,5 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '../../../lib/prisma'
+import { logger } from '@/lib/logger'
+
+interface PrismaCandidate {
+  id: string
+  firstName: string
+  lastName: string
+  email: string
+  cellPhone?: string
+  nationality?: string
+  currentLocation?: string
+  technicalSkills?: string
+  languageProficiency?: string
+  experience?: number
+  salaryExpectation?: number
+  availabilityDate?: string
+  culturalAssessments?: Array<{
+    overallScore?: number
+  }>
+  createdAt: Date
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -13,7 +33,7 @@ export async function GET(request: NextRequest) {
     })
 
     // Transform data for frontend consumption
-    const transformedCandidates = candidates.map(candidate => ({
+    const transformedCandidates = candidates.map((candidate: PrismaCandidate) => ({
       id: candidate.id,
       firstName: candidate.firstName,
       lastName: candidate.lastName,
@@ -26,14 +46,14 @@ export async function GET(request: NextRequest) {
       experience: candidate.experience,
       salaryExpectation: candidate.salaryExpectation,
       availabilityDate: candidate.availabilityDate,
-      culturalScore: candidate.culturalAssessments[0]?.overallScore || null,
+      culturalScore: candidate.culturalAssessments?.[0]?.overallScore || null,
       createdAt: candidate.createdAt,
       updatedAt: candidate.updatedAt
     }))
 
     return NextResponse.json(transformedCandidates)
   } catch (error) {
-    console.error('Error fetching candidates:', error)
+    logger.error('Error fetching candidates:', { error })
     return NextResponse.json(
       { error: 'Failed to fetch candidates' },
       { status: 500 }
@@ -73,9 +93,9 @@ export async function POST(request: NextRequest) {
     
     return NextResponse.json(candidate, { status: 201 })
   } catch (error) {
-    console.error('Error creating candidate:', error)
+    logger.error('Error creating candidate:', { error })
     
-    if (error.code === 'P2002') {
+    if ((error as any).code === 'P2002') {
       return NextResponse.json(
         { error: 'Email already exists' },
         { status: 409 }

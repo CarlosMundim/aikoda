@@ -1,6 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import { SAPCard, SAPButton, SAPInput, SAPSelect } from '@/components/SAP'
+import { logger } from '@/lib/logger'
 
 interface JobPostingForm {
   // Basic Job Information
@@ -267,12 +268,12 @@ export default function JobPosting() {
   const currentLabels = labels[language]
 
   const handleSaveJob = () => {
-    console.log('Saving job:', jobForm)
+    logger.info('Saving job:', { jobForm })
     setCurrentView('list')
   }
 
   const handlePublishJob = () => {
-    console.log('Publishing job:', jobForm)
+    logger.info('Publishing job:', { jobForm })
     setCurrentView('list')
   }
 

@@ -1,13 +1,32 @@
 'use client'
 import React, { useState } from 'react'
 import { SAPCard, SAPButton } from './index'
+import { logger } from '@/lib/logger'
 import jsPDF from 'jspdf'
+
+interface CandidateData {
+  firstName: string
+  lastName: string
+  email: string
+  nationality: string
+  technicalSkills: string[]
+  languageProficiency: Record<string, string>
+}
+
+interface AnalysisResult {
+  candidateId: string
+  overallScore: number
+  dimensionScores: Record<string, number>
+  culturalFitPrediction: number
+  integrationTimeline: number
+  recommendations: string[]
+}
 
 interface CulturalReportProps {
   candidateId?: string
   language: 'en' | 'ja'
-  candidateData?: any
-  analysisResult?: any
+  candidateData?: CandidateData
+  analysisResult?: AnalysisResult
 }
 
 export default function CulturalReport({ 
@@ -169,7 +188,7 @@ export default function CulturalReport({
       doc.save(fileName)
       
     } catch (error) {
-      console.error('Report generation failed:', error)
+      logger.error('Report generation failed:', { error })
       alert(language === 'ja' ? 'レポート生成に失敗しました' : 'Report generation failed')
     } finally {
       setIsGenerating(false)

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { logger } from '@/lib/logger'
 
 export async function GET() {
   try {
@@ -37,7 +38,7 @@ export async function GET() {
     
     return NextResponse.json(kpis)
   } catch (error) {
-    console.error('KPI calculation error:', error)
+    logger.error('KPI calculation error:', { error })
     
     // Return mock data for development when database is empty
     const mockKpis = {
@@ -63,7 +64,7 @@ async function calculatePlacementSuccessRate(): Promise<number> {
     
     return totalApplications > 0 ? (successfulPlacements / totalApplications) * 100 : 0
   } catch (error) {
-    console.error('Error calculating placement success rate:', error)
+    logger.error('Error calculating placement success rate:', { error })
     return 94.2 // Mock value
   }
 }
@@ -91,7 +92,7 @@ async function calculateAverageTimeToFill(): Promise<number> {
     
     return totalDays / filledJobs.length
   } catch (error) {
-    console.error('Error calculating average time to fill:', error)
+    logger.error('Error calculating average time to fill:', { error })
     return 18.5 // Mock value
   }
 }
@@ -113,7 +114,7 @@ async function calculatePipelineValue(): Promise<number> {
     
     return pipelineValue || 45600000 // Mock value if no data
   } catch (error) {
-    console.error('Error calculating pipeline value:', error)
+    logger.error('Error calculating pipeline value:', { error })
     return 45600000 // Mock value
   }
 }
@@ -138,7 +139,7 @@ export async function POST(request: NextRequest) {
     
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('Error updating metric:', error)
+    logger.error('Error updating metric:', { error })
     return NextResponse.json(
       { error: 'Failed to update metric' },
       { status: 500 }

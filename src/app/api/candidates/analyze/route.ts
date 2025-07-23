@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '../../../../lib/prisma'
 import { aiCulturalIntelligenceAnalysis } from '../../../../lib/ai-services'
+import { logger } from '@/lib/logger'
 
 // Enhanced 47-dimension cultural intelligence calculation with AI
 async function calculateCulturalIntelligence(candidateData: any): Promise<any> {
@@ -23,7 +24,7 @@ async function calculateCulturalIntelligence(candidateData: any): Promise<any> {
       recommendations: aiAnalysis.culturalTraining
     }
   } catch (error) {
-    console.error('AI Cultural Analysis failed, using fallback:', error)
+    logger.error('AI Cultural Analysis failed, using fallback:', { error })
     
     // Fallback to algorithmic analysis
     const baseScore = 75 + Math.random() * 20
@@ -115,13 +116,13 @@ export async function POST(request: NextRequest) {
       
       analysisResult.candidateId = candidate.id
     } catch (dbError) {
-      console.error('Database error:', dbError)
+      logger.error('Database error:', { error: dbError })
       // Continue with mock analysis even if DB fails
     }
     
     return NextResponse.json(analysisResult)
   } catch (error) {
-    console.error('Error analyzing candidate:', error)
+    logger.error('Error analyzing candidate:', { error })
     return NextResponse.json(
       { error: 'Analysis failed' },
       { status: 500 }

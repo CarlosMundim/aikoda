@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '../../../../lib/prisma'
+import { logger } from '@/lib/logger'
 
 export async function GET() {
   try {
@@ -60,7 +61,7 @@ export async function GET() {
 
     return NextResponse.json(kpiData)
   } catch (error) {
-    console.error('Error fetching KPIs:', error)
+    logger.error('Error fetching KPIs:', { error })
     
     // Return mock data if database is not available
     return NextResponse.json({

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '../../../../lib/prisma'
 import { aiCulturalIntelligenceAnalysis } from '../../../../lib/ai-services'
+import { logger } from '@/lib/logger'
 
 /**
  * Complete Candidate Registration Workflow
@@ -18,7 +19,7 @@ export async function POST(request: NextRequest) {
       )
     }
     
-    console.log('🚀 Starting candidate registration workflow:', body.email)
+    logger.info('🚀 Starting candidate registration workflow:', { email: body.email })
     
     // Step 1: Create candidate record
     const candidate = await prisma.candidate.create({
@@ -39,12 +40,12 @@ export async function POST(request: NextRequest) {
       }
     })
     
-    console.log('✅ Candidate created:', candidate.id)
+    logger.info('✅ Candidate created:', { candidateId: candidate.id })
     
     // Step 2: AI Cultural Intelligence Analysis
     let culturalAnalysis = null
     try {
-      console.log('🧠 Running AI cultural intelligence analysis...')
+      logger.info('🧠 Running AI cultural intelligence analysis...')
       culturalAnalysis = await aiCulturalIntelligenceAnalysis(candidate, body.culturalResponses)
       
       // Step 3: Store cultural assessment
@@ -71,15 +72,15 @@ export async function POST(request: NextRequest) {
         }
       })
       
-      console.log('✅ Cultural assessment stored')
+      logger.info('✅ Cultural assessment stored')
     } catch (aiError) {
-      console.error('⚠️ AI analysis failed, continuing without:', aiError)
+      logger.error('⚠️ AI analysis failed, continuing without:', { error: aiError })
     }
     
     // Step 4: Find potential job matches
     let jobMatches = []
     try {
-      console.log('🎯 Finding job matches...')
+      logger.info('🎯 Finding job matches...')
       const activeJobs = await prisma.jobPosting.findMany({
         where: { 
           // Add any active job filters here if needed
@@ -111,16 +112,16 @@ export async function POST(request: NextRequest) {
             recommendations: matchResult.recommendations
           })
         } catch (matchError) {
-          console.error('Match calculation failed for job:', job.id, matchError)
+          logger.error('Match calculation failed for job:', { jobId: job.id, error: matchError })
         }
       }
       
       // Sort by match score
       jobMatches.sort((a, b) => b.matchScore - a.matchScore)
-      console.log(`✅ Found ${jobMatches.length} job matches`)
+      logger.info(`✅ Found ${jobMatches.length} job matches`, { matchCount: jobMatches.length })
       
     } catch (matchError) {
-      console.error('⚠️ Job matching failed:', matchError)
+      logger.error('⚠️ Job matching failed:', { error: matchError })
     }
     
     // Step 5: Prepare dashboard data
@@ -156,7 +157,7 @@ export async function POST(request: NextRequest) {
       ]
     }
     
-    console.log('🎉 Registration workflow completed successfully')
+    logger.info('🎉 Registration workflow completed successfully')
     
     return NextResponse.json({
       success: true,
@@ -168,7 +169,7 @@ export async function POST(request: NextRequest) {
     }, { status: 201 })
     
   } catch (error) {
-    console.error('❌ Registration workflow error:', error)
+    logger.error('❌ Registration workflow error:', { error })
     return NextResponse.json(
       { 
         error: 'Registration workflow failed',

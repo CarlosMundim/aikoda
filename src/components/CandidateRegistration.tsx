@@ -1,6 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import { SAPCard, SAPButton, SAPInput, SAPSelect } from '@/components/SAP'
+import { logger } from '@/lib/logger'
 
 interface PersonalInfo {
   firstName: string
@@ -272,7 +273,7 @@ export default function CandidateRegistration() {
       documentUploads
     }
     
-    console.log('Candidate Registration Data:', registrationData)
+    logger.info('Candidate Registration Data:', { registrationData })
     // TODO: Submit to API
   }
 

@@ -1,6 +1,40 @@
 // AI Services for aiKODA Platform v2
 // Free AI APIs for Job Matching and Cultural Intelligence
 
+import { logger } from '@/lib/logger'
+
+interface CandidateJobData {
+  firstName?: string
+  lastName?: string
+  email?: string
+  nationality?: string
+  technicalSkills?: string[]
+  languageProficiency?: Record<string, string>
+  experience?: number
+  currentLocation?: string
+  education?: string
+  culturalResponses?: CulturalResponse[]
+}
+
+interface JobData {
+  title: string
+  company: string
+  department?: string
+  location: string
+  technicalSkills: string[]
+  salaryMin?: number
+  salaryMax?: number
+  description: string
+  culturalRequirements?: string[]
+}
+
+interface CulturalResponse {
+  dimension_id: string
+  question_id: string
+  score: number
+  evidence?: string
+}
+
 interface MatchingAnalysis {
   overallScore: number
   skillsMatch: number
@@ -24,19 +58,25 @@ interface CulturalAnalysis {
 
 // Hugging Face API Configuration (Free Tier)
 const HUGGING_FACE_API_URL = 'https://api-inference.huggingface.co/models'
-const HUGGING_FACE_TOKEN = process.env.HUGGING_FACE_TOKEN || 'hf_free_token'
+const HUGGING_FACE_TOKEN = process.env.HUGGING_FACE_TOKEN
+if (!HUGGING_FACE_TOKEN) {
+  throw new Error('HUGGING_FACE_TOKEN environment variable is not configured')
+}
 
 // Gemini API Configuration (Free Tier) 
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent'
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || 'free_gemini_key'
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY
+if (!GEMINI_API_KEY) {
+  throw new Error('GEMINI_API_KEY environment variable is not configured')
+}
 
 /**
  * Advanced AI-Powered Job-Candidate Matching Engine
  * Uses Hugging Face Sentence Transformers for semantic matching
  */
 export async function aiJobCandidateMatching(
-  candidateData: any,
-  jobData: any
+  candidateData: CandidateJobData,
+  jobData: JobData
 ): Promise<MatchingAnalysis> {
   try {
     // Prepare semantic analysis data
@@ -94,7 +134,10 @@ export async function aiJobCandidateMatching(
       confidence: Math.round(85 + Math.random() * 10)
     }
   } catch (error) {
-    console.error('AI Matching Error:', error)
+    // Log error securely without exposing sensitive data
+    if (process.env.NODE_ENV === 'development') {
+      logger.error('AI Matching Error:', { error })
+    }
     // Fallback to algorithmic matching
     return fallbackMatching(candidateData, jobData)
   }
@@ -105,8 +148,8 @@ export async function aiJobCandidateMatching(
  * Analyzes candidate responses for Japanese cultural alignment
  */
 export async function aiCulturalIntelligenceAnalysis(
-  candidateData: any,
-  culturalResponses?: any[]
+  candidateData: CandidateJobData,
+  culturalResponses?: CulturalResponse[]
 ): Promise<CulturalAnalysis> {
   try {
     const prompt = `
@@ -137,7 +180,10 @@ Provide scores (0-100) for each dimension and an integration timeline in days.
     
     return scores
   } catch (error) {
-    console.error('Cultural AI Analysis Error:', error)
+    // Log error securely without exposing sensitive data
+    if (process.env.NODE_ENV === 'development') {
+      logger.error('Cultural AI Analysis Error:', { error })
+    }
     // Fallback to algorithmic cultural scoring
     return fallbackCulturalAnalysis(candidateData)
   }
@@ -200,7 +246,10 @@ async function callGeminiAPI(prompt: string): Promise<string> {
     const result = await response.json()
     return result.candidates?.[0]?.content?.parts?.[0]?.text || ''
   } catch (error) {
-    console.error('Gemini API Error:', error)
+    // Log error securely without exposing sensitive data
+    if (process.env.NODE_ENV === 'development') {
+      logger.error('Gemini API Error:', { error })
+    }
     throw error
   }
 }
@@ -208,7 +257,7 @@ async function callGeminiAPI(prompt: string): Promise<string> {
 /**
  * Skills Alignment Calculation
  */
-function calculateSkillsAlignment(candidate: any, job: any): number {
+function calculateSkillsAlignment(candidate: CandidateJobData, job: JobData): number {
   const candidateSkills = Array.isArray(candidate.technicalSkills) 
     ? candidate.technicalSkills 
     : JSON.parse(candidate.technicalSkills || '[]')
@@ -232,7 +281,7 @@ function calculateSkillsAlignment(candidate: any, job: any): number {
 /**
  * Experience Match Calculation
  */
-function calculateExperienceMatch(candidate: any, job: any): number {
+function calculateExperienceMatch(candidate: CandidateJobData, job: JobData): number {
   const candidateExp = candidate.experience || 0
   const requiredExp = getRequiredExperience(job.experienceLevel)
   
@@ -246,7 +295,7 @@ function calculateExperienceMatch(candidate: any, job: any): number {
 /**
  * Location Match Calculation
  */
-function calculateLocationMatch(candidate: any, job: any): number {
+function calculateLocationMatch(candidate: CandidateJobData, job: JobData): number {
   const candidateLocation = candidate.currentLocation || ''
   const jobLocation = job.location || ''
   
@@ -262,7 +311,7 @@ function calculateLocationMatch(candidate: any, job: any): number {
 /**
  * AI Cultural Fit Analysis
  */
-async function aiCulturalFitAnalysis(candidate: any, job: any): Promise<number> {
+async function aiCulturalFitAnalysis(candidate: CandidateJobData, job: JobData): Promise<number> {
   // Check if Japanese candidate
   if (candidate.nationality === 'JP' || candidate.nationality === 'Japan') {
     return 90 + Math.random() * 8
@@ -327,7 +376,7 @@ function generateMatchingRecommendations(
 /**
  * Parse Cultural Scores from AI Response
  */
-function parseCulturalScores(aiResponse: string, candidateData: any): CulturalAnalysis {
+function parseCulturalScores(aiResponse: string, candidateData: CandidateJobData): CulturalAnalysis {
   // Extract numbers from AI response or use algorithmic fallback
   const waScore = extractScore(aiResponse, 'wa') || calculateWaScore(candidateData)
   const kaizenScore = extractScore(aiResponse, 'kaizen') || calculateKaizenScore(candidateData)
@@ -353,7 +402,7 @@ function parseCulturalScores(aiResponse: string, candidateData: any): CulturalAn
 /**
  * Fallback Matching Algorithm
  */
-function fallbackMatching(candidateData: any, jobData: any): MatchingAnalysis {
+function fallbackMatching(candidateData: CandidateJobData, jobData: JobData): MatchingAnalysis {
   const skillsMatch = calculateSkillsAlignment(candidateData, jobData)
   const experienceMatch = calculateExperienceMatch(candidateData, jobData)
   const locationMatch = calculateLocationMatch(candidateData, jobData)
@@ -380,7 +429,7 @@ function fallbackMatching(candidateData: any, jobData: any): MatchingAnalysis {
 /**
  * Fallback Cultural Analysis
  */
-function fallbackCulturalAnalysis(candidateData: any): CulturalAnalysis {
+function fallbackCulturalAnalysis(candidateData: CandidateJobData): CulturalAnalysis {
   const baseScore = candidateData.nationality === 'JP' ? 90 : 60
   const variation = Math.random() * 20 - 10
   
@@ -426,27 +475,27 @@ function calculateTextSimilarity(text1: string, text2: string): number {
   return (intersection.length / union.length) * 100
 }
 
-function calculateWaScore(candidate: any): number {
+function calculateWaScore(candidate: CandidateJobData): number {
   return candidate.nationality === 'JP' ? 90 + Math.random() * 8 : 60 + Math.random() * 20
 }
 
-function calculateKaizenScore(candidate: any): number {
+function calculateKaizenScore(candidate: CandidateJobData): number {
   return candidate.nationality === 'JP' ? 88 + Math.random() * 10 : 65 + Math.random() * 15
 }
 
-function calculateOmotenashiScore(candidate: any): number {
+function calculateOmotenashiScore(candidate: CandidateJobData): number {
   return candidate.nationality === 'JP' ? 92 + Math.random() * 6 : 70 + Math.random() * 18
 }
 
-function calculateBushidoScore(candidate: any): number {
+function calculateBushidoScore(candidate: CandidateJobData): number {
   return candidate.nationality === 'JP' ? 85 + Math.random() * 12 : 55 + Math.random() * 25
 }
 
-function calculateNemawashiScore(candidate: any): number {
+function calculateNemawashiScore(candidate: CandidateJobData): number {
   return candidate.nationality === 'JP' ? 87 + Math.random() * 10 : 50 + Math.random() * 30
 }
 
-function generateCulturalTraining(score: number, candidate: any): string[] {
+function generateCulturalTraining(score: number, candidate: CandidateJobData): string[] {
   if (score >= 85) {
     return ['Excellence demonstrated - mentorship opportunity']
   } else if (score >= 70) {

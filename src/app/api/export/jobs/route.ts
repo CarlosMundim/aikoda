@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '../../../../lib/prisma'
+import { logger } from '@/lib/logger'
 
 export async function GET(request: NextRequest) {
   try {
@@ -93,7 +94,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid format' }, { status: 400 })
     
   } catch (error) {
-    console.error('Error exporting jobs:', error)
+    logger.error('Error exporting jobs:', { error })
     return NextResponse.json(
       { error: 'Failed to export jobs' },
       { status: 500 }

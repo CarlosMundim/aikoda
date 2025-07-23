@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '../../../lib/prisma'
+import { logger } from '@/lib/logger'
 
 export async function GET(request: NextRequest) {
   try {
@@ -28,7 +29,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(jobs)
   } catch (error) {
-    console.error('Error fetching jobs:', error)
+    logger.error('Error fetching jobs:', { error })
     
     // Return mock data if database fails
     const mockJobs = [
@@ -161,7 +162,7 @@ export async function POST(request: NextRequest) {
     
     return NextResponse.json(job, { status: 201 })
   } catch (error) {
-    console.error('Error creating job:', error)
+    logger.error('Error creating job:', { error })
     return NextResponse.json(
       { error: 'Failed to create job' },
       { status: 500 }

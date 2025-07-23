@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '../../../../lib/prisma'
 import { aiJobCandidateMatching } from '../../../../lib/ai-services'
+import { logger } from '@/lib/logger'
 
 export async function GET(request: NextRequest) {
   try {
@@ -41,7 +42,7 @@ export async function GET(request: NextRequest) {
             matchDate: new Date().toISOString()
           })
         } catch (error) {
-          console.error(`AI matching failed for candidate ${candidate.id}:`, error)
+          logger.error(`AI matching failed for candidate ${candidate.id}:`, { candidateId: candidate.id, error })
           // Fallback to basic matching
           matches.push({
             jobId: job.id,
@@ -91,7 +92,7 @@ export async function GET(request: NextRequest) {
               matchDate: new Date().toISOString()
             })
           } catch (error) {
-            console.error(`AI matching failed:`, error)
+            logger.error(`AI matching failed:`, { error })
           }
         }
       }
@@ -143,7 +144,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid format' }, { status: 400 })
     
   } catch (error) {
-    console.error('Error exporting matches:', error)
+    logger.error('Error exporting matches:', { error })
     return NextResponse.json(
       { error: 'Failed to export matches' },
       { status: 500 }

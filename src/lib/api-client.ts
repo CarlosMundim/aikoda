@@ -32,6 +32,17 @@ export interface JobData {
   description: string
 }
 
+export interface CompanyData {
+  name: string
+  industry: string
+  size: string
+  location: string
+  contactEmail: string
+  website?: string
+  description?: string
+  culturalRequirements?: string[]
+}
+
 export interface MatchingResult {
   candidateId: string
   jobId: string
@@ -110,7 +121,7 @@ class APIClient {
   }
 
   // Company APIs
-  async registerCompany(companyData: any) {
+  async registerCompany(companyData: CompanyData) {
     const response = await fetch(`${this.baseURL}/workflow/company-registration`, {
       method: 'POST',
       headers: {

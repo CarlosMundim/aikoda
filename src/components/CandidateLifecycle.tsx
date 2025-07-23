@@ -754,7 +754,7 @@ export default function CandidateLifecycle() {
           <div className="flex space-x-4">
             <SAPSelect
               value={selectedCandidate || candidateWorkflows[0].candidateId}
-              onChange={(e) => setSelectedCandidate(e.target.value)}
+              onChange={(value) => setSelectedCandidate(value)}
               options={candidateWorkflows.map(c => ({
                 value: c.candidateId,
                 label: c.candidateName
@@ -763,7 +763,7 @@ export default function CandidateLifecycle() {
             
             <SAPSelect
               value={viewMode}
-              onChange={(e) => setViewMode(e.target.value as any)}
+              onChange={(value) => setViewMode(value as 'overview' | 'detailed' | 'timeline')}
               options={[
                 { value: 'overview', label: currentLabels.overview },
                 { value: 'detailed', label: currentLabels.detailed },
@@ -782,7 +782,7 @@ export default function CandidateLifecycle() {
           ].map((tab) => (
             <button
               key={tab.key}
-              onClick={() => setViewMode(tab.key as any)}
+              onClick={() => setViewMode(tab.key as 'overview' | 'detailed' | 'timeline')}
               className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                 viewMode === tab.key
                   ? 'bg-white text-blue-600 shadow-sm'

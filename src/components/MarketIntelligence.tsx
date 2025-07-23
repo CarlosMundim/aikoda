@@ -657,7 +657,7 @@ export default function MarketIntelligence() {
           <div className="flex space-x-4">
             <SAPSelect
               value={selectedTimeframe}
-              onChange={(e) => setSelectedTimeframe(e.target.value as any)}
+              onChange={(value) => setSelectedTimeframe(value as 'week' | 'month' | 'quarter' | 'year')}
               options={[
                 { value: 'week', label: 'This Week' },
                 { value: 'month', label: 'This Month' },
@@ -668,7 +668,7 @@ export default function MarketIntelligence() {
             
             <SAPSelect
               value={selectedLocation}
-              onChange={(e) => setSelectedLocation(e.target.value)}
+              onChange={(value) => setSelectedLocation(value)}
               options={[
                 { value: 'Tokyo', label: 'Tokyo' },
                 { value: 'Osaka', label: 'Osaka' },

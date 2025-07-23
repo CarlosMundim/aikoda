@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '../../../lib/prisma'
 import { aiJobCandidateMatching } from '../../../lib/ai-services'
+import { logger } from '@/lib/logger'
 
 // AI-Enhanced matching algorithm with 47-dimension cultural intelligence
 async function calculateJobCandidateMatch(candidate: any, job: any): Promise<any> {
@@ -28,7 +29,7 @@ async function calculateJobCandidateMatch(candidate: any, job: any): Promise<any
       aiPowered: true
     }
   } catch (error) {
-    console.error('AI Matching failed, using fallback:', error)
+    logger.error('AI Matching failed, using fallback:', { error })
     
     // Fallback to algorithmic matching
     const jobSkills = Array.isArray(job.requiredSkills) ? job.requiredSkills : JSON.parse(job.requiredSkills || '[]')
@@ -183,7 +184,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid analysis type' }, { status: 400 })
     
   } catch (error) {
-    console.error('Error in matching analysis:', error)
+    logger.error('Error in matching analysis:', { error })
     return NextResponse.json(
       { error: 'Matching analysis failed' },
       { status: 500 }

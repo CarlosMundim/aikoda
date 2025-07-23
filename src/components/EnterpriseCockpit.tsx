@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { SAPCard } from './SAPCard'
 import { SAPButton } from './SAPButton'
+import { logger } from '@/lib/logger'
 
 interface KPIData {
   total_candidates: number
@@ -75,7 +76,7 @@ export function EnterpriseCockpit({ language }: EnterpriseCockpitProps) {
       setKpis(data)
       setLastUpdated(new Date())
     } catch (error) {
-      console.error('Failed to fetch KPIs:', error)
+      logger.error('Failed to fetch KPIs:', { error })
       // Set mock data for development
       setKpis({
         total_candidates: 1247,

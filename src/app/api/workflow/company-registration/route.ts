@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '../../../../lib/prisma'
 import { aiJobCandidateMatching } from '../../../../lib/ai-services'
+import { logger } from '@/lib/logger'
 
 /**
  * Complete Company Registration Workflow
@@ -18,7 +19,7 @@ export async function POST(request: NextRequest) {
       )
     }
     
-    console.log('🏢 Starting company registration workflow:', body.companyName)
+    logger.info('🏢 Starting company registration workflow:', { companyName: body.companyName })
     
     // Step 1: Create company record
     const company = await prisma.company.create({
@@ -33,7 +34,7 @@ export async function POST(request: NextRequest) {
       }
     })
     
-    console.log('✅ Company created:', company.id)
+    logger.info('✅ Company created:', { companyId: company.id })
     
     // Step 2: Create initial job posting if provided
     let jobPosting = null
@@ -56,14 +57,14 @@ export async function POST(request: NextRequest) {
         }
       })
       
-      console.log('✅ Job posting created:', jobPosting.id)
+      logger.info('✅ Job posting created:', { jobPostingId: jobPosting.id })
     }
     
     // Step 3: Find potential candidates if job was posted
     let candidateMatches = []
     if (jobPosting) {
       try {
-        console.log('🎯 Finding candidate matches for job...')
+        logger.info('🎯 Finding candidate matches for job...')
         const candidates = await prisma.candidate.findMany({
           take: 10, // Limit to top 10 candidates
           orderBy: { createdAt: 'desc' }
@@ -82,19 +83,19 @@ export async function POST(request: NextRequest) {
               skillsMatch: matchResult.skillsMatch,
               culturalFit: matchResult.culturalFit,
               recommendations: matchResult.recommendations,
-              aiPowered: matchResult.aiPowered || false
+              confidence: matchResult.confidence
             })
           } catch (matchError) {
-            console.error('Match calculation failed for candidate:', candidate.id, matchError)
+            logger.error('Match calculation failed for candidate:', { candidateId: candidate.id, error: matchError })
           }
         }
         
         // Sort by match score
         candidateMatches.sort((a, b) => b.matchScore - a.matchScore)
-        console.log(`✅ Found ${candidateMatches.length} candidate matches`)
+        logger.info(`✅ Found ${candidateMatches.length} candidate matches`, { matchCount: candidateMatches.length })
         
       } catch (matchError) {
-        console.error('⚠️ Candidate matching failed:', matchError)
+        logger.error('⚠️ Candidate matching failed:', { error: matchError })
       }
     }
     
@@ -146,7 +147,7 @@ export async function POST(request: NextRequest) {
       ]
     }
     
-    console.log('🎉 Company registration workflow completed successfully')
+    logger.info('🎉 Company registration workflow completed successfully')
     
     return NextResponse.json({
       success: true,
@@ -159,7 +160,7 @@ export async function POST(request: NextRequest) {
     }, { status: 201 })
     
   } catch (error) {
-    console.error('❌ Company registration workflow error:', error)
+    logger.error('❌ Company registration workflow error:', { error })
     return NextResponse.json(
       { 
         error: 'Company registration workflow failed',
