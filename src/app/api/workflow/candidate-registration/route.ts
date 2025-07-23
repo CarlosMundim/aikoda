@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
           assessmentType: 'comprehensive',
           overallScore: culturalAnalysis.overallScore,
           culturalFitPrediction: Math.min(98, culturalAnalysis.overallScore + 5),
-          integrationTimelineDays: culturalAnalysis.integrationTimeline,
+          integrationTimelineDays: culturalAnalysis.integrationTimeline === "1-2 months" ? 45 : 150,
           waHarmonyScore: culturalAnalysis.waHarmony,
           kaizenImprovementScore: culturalAnalysis.kaizenImprovement,
           omotenashiServiceScore: culturalAnalysis.omotenashiService,
