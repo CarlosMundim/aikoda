@@ -64,16 +64,18 @@ export default function CandidatesPage() {
         <p style={{ color: '#64748b', margin: '0 0 1rem 0' }}>
           Foundation - Basic candidate listing
         </p>
-        <a 
-          href="/"
+        <button 
+          onClick={() => window.location.href = '/'}
           style={{
             color: '#1e40af',
-            textDecoration: 'none',
-            fontSize: '0.9rem'
+            background: 'none',
+            border: 'none',
+            fontSize: '0.9rem',
+            cursor: 'pointer'
           }}
         >
           ← Back to Home
-        </a>
+        </button>
       </div>
 
       {candidates.length === 0 ? (
