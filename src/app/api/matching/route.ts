@@ -134,7 +134,7 @@ export async function POST(request: NextRequest) {
     if (analysisType === 'candidate_jobs') {
       // Find jobs for a specific candidate
       const candidate = await prisma.candidate.findUnique({
-        where: { id: parseInt(candidateId) }
+        where: { id: candidateId }
       })
       
       if (!candidate) {
