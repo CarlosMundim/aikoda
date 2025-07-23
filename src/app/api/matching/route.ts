@@ -14,13 +14,13 @@ async function calculateJobCandidateMatch(candidate: any, job: any): Promise<any
       jobId: job.id,
       overallScore: aiMatch.overallScore,
       successProbability: Math.round(aiMatch.overallScore + Math.random() * 5),
-      skillsMatch: aiMatch.skillsMatch,
+      skillsMatch: aiMatch.technicalMatch,
       culturalFit: aiMatch.culturalFit,
       locationMatch: 95, // Assume good location for demo
       experienceMatch: aiMatch.experienceMatch,
       explanations: [
         `AI-enhanced matching analysis (${aiMatch.confidence}% confidence)`,
-        `Skills alignment: ${aiMatch.skillsMatch}% match`,
+        `Skills alignment: ${aiMatch.technicalMatch}% match`,
         `Cultural compatibility: ${aiMatch.culturalFit}% fit`,
         ...aiMatch.recommendations.slice(0, 2)
       ],

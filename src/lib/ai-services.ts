@@ -9,6 +9,7 @@ export interface MatchingAnalysis {
   locationCompatibility: number
   recommendations: string[]
   integrationTimeline: string
+  confidence: number
 }
 
 export interface CulturalAnalysis {
@@ -48,7 +49,8 @@ export async function aiJobCandidateMatching(
       "Cultural intelligence assessment recommended",
       "Consider for advanced interview process"
     ],
-    integrationTimeline: overallScore > 85 ? "2-4 weeks" : "4-8 weeks"
+    integrationTimeline: overallScore > 85 ? "2-4 weeks" : "4-8 weeks",
+    confidence: Math.round(85 + Math.random() * 10)
   }
 }
 
