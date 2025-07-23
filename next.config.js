@@ -7,13 +7,12 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  // Enable standalone output for Docker
-  output: 'standalone',
+  // Removed standalone output for simpler deployment
   experimental: {
     // Compatible with Next.js 15.4.1
     typedRoutes: false,
   },
-  // Optimize memory usage
+  // Optimize memory usage and fix 'self is not defined'
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback = {
@@ -23,6 +22,20 @@ const nextConfig = {
         tls: false,
       }
     }
+    
+    // Fix 'self is not defined' error
+    config.module = {
+      ...config.module,
+      unknownContextCritical: false,
+    }
+    
+    // Define global variables for server-side
+    config.plugins = config.plugins || []
+    config.plugins.push(
+      new config.webpack.DefinePlugin({
+        'global.self': 'global',
+      })
+    )
     
     // Reduce memory pressure
     config.optimization = {
