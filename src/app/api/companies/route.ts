@@ -84,14 +84,14 @@ export async function POST(request: NextRequest) {
         companySize: body.companySize,
         // headquartersLocation: body.headquartersLocation, // Field may not exist in schema
         description: body.description,
-        establishedYear: body.establishedYear,
-        website: body.website,
-        contactEmail: body.contactEmail,
-        contactPhone: body.contactPhone,
-        culturalAttributes: JSON.stringify(body.culturalAttributes || {}),
-        diversityGoals: JSON.stringify(body.diversityGoals || {}),
-        hiringVolume: body.hiringVolume,
-        averageTimeToHire: body.averageTimeToHire
+        // establishedYear: body.establishedYear, // Field may not exist in schema
+        // website: body.website, // Field may not exist in schema
+        // contactEmail: body.contactEmail, // Field may not exist in schema
+        // contactPhone: body.contactPhone, // Field may not exist in schema
+        // culturalAttributes: JSON.stringify(body.culturalAttributes || {}), // Field may not exist in schema
+        // diversityGoals: JSON.stringify(body.diversityGoals || {}), // Field may not exist in schema
+        // hiringVolume: body.hiringVolume, // Field may not exist in schema
+        // averageTimeToHire: body.averageTimeToHire // Field may not exist in schema
       }
     })
     
