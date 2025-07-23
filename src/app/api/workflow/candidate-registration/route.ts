@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
     let culturalAnalysis = null
     try {
       logger.info('🧠 Running AI cultural intelligence analysis...')
-      culturalAnalysis = await aiCulturalIntelligenceAnalysis(candidate, body.culturalResponses)
+      culturalAnalysis = await aiCulturalIntelligenceAnalysis(candidate)
       
       // Step 3: Store cultural assessment
       await prisma.culturalAssessment.create({
