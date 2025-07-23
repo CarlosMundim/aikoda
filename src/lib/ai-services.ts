@@ -511,9 +511,4 @@ function generateCulturalTraining(score: number, candidate: CandidateJobData): s
   }
 }
 
-export {
-  aiJobCandidateMatching,
-  aiCulturalIntelligenceAnalysis,
-  type MatchingAnalysis,
-  type CulturalAnalysis
-}
+// Functions are already exported inline above
