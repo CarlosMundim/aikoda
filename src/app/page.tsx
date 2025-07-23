@@ -1,26 +1,39 @@
-'use client'
-
-export default function SimpleTestPage() {
+export default function HomePage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100">
-      <div className="text-center space-y-6">
-        <h1 className="text-6xl font-bold text-blue-600">🐅⚡</h1>
-        <h2 className="text-4xl font-bold text-gray-800">aiKODA Platform v2</h2>
-        <p className="text-xl text-gray-600">Tiger Boss Integration SUCCESS!</p>
-        <div className="space-y-2">
-          <p className="text-lg text-green-600">✅ Backend APIs: READY</p>
-          <p className="text-lg text-green-600">✅ Database: FUNCTIONAL</p>
-          <p className="text-lg text-green-600">✅ AI Integration: COMPLETE</p>
-          <p className="text-lg text-green-600">✅ Manus Components: IMPORTED</p>
+    <div style={{ 
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: '#f8fafc',
+      fontFamily: 'system-ui, sans-serif'
+    }}>
+      <div style={{ textAlign: 'center', padding: '2rem' }}>
+        <h1 style={{ fontSize: '3rem', color: '#1e40af', margin: '0 0 1rem 0' }}>
+          🐅 aiKODA Platform
+        </h1>
+        <p style={{ fontSize: '1.2rem', color: '#64748b', margin: '0 0 2rem 0' }}>
+          Foundation - Solid Base Architecture
+        </p>
+        <div style={{ marginBottom: '2rem' }}>
+          <p style={{ color: '#059669', margin: '0.5rem 0' }}>✅ Next.js App Running</p>
+          <p style={{ color: '#059669', margin: '0.5rem 0' }}>✅ Foundation Branch</p>
+          <p style={{ color: '#059669', margin: '0.5rem 0' }}>✅ Clean Architecture</p>
         </div>
-        <div className="mt-8">
-          <a 
-            href="/dashboard" 
-            className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-          >
-            Enter Dashboard
-          </a>
-        </div>
+        <a 
+          href="/candidates" 
+          style={{
+            backgroundColor: '#1e40af',
+            color: 'white',
+            padding: '0.75rem 1.5rem',
+            borderRadius: '0.5rem',
+            textDecoration: 'none',
+            display: 'inline-block',
+            fontWeight: '600'
+          }}
+        >
+          View Candidates
+        </a>
       </div>
     </div>
   )

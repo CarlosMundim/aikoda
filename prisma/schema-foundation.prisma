@@ -1,0 +1,69 @@
+// FOUNDATION SCHEMA - Essential models only
+// No complex cultural intelligence, just basic CRUD
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Simple Candidate Model - Foundation Only
+model Candidate {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Basic Information Only
+  firstName   String
+  lastName    String
+  email       String   @unique
+  phone       String?
+  nationality String?
+  location    String?
+  
+  // Simple Professional Info
+  position    String?
+  experience  Int?     // Years
+  skills      String?  // JSON array of skills
+  
+  @@map("candidates")
+}
+
+// Simple Company Model - Foundation Only  
+model Company {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Basic Information Only
+  name        String   @unique
+  industry    String
+  size        String?  // "1-10", "11-50", etc
+  location    String
+  website     String?
+  description String?
+  
+  @@map("companies")
+}
+
+// Simple Job Model - Foundation Only
+model Job {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Basic Job Info
+  title       String
+  company     String   // Company name for now
+  location    String
+  description String
+  requirements String? // Simple text
+  salary      String?  // "50-80k USD"
+  
+  active      Boolean  @default(true)
+  
+  @@map("jobs")
+}
