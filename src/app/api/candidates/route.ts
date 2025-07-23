@@ -33,14 +33,14 @@ export async function GET(request: NextRequest) {
     })
 
     // Transform data for frontend consumption
-    const transformedCandidates = candidates.map((candidate: PrismaCandidate) => ({
+    const transformedCandidates = candidates.map((candidate: any) => ({
       id: candidate.id,
       firstName: candidate.firstName,
       lastName: candidate.lastName,
       email: candidate.email,
-      cellPhone: candidate.cellPhone,
-      nationality: candidate.nationality,
-      currentLocation: candidate.currentLocation,
+      cellPhone: candidate.cellPhone || undefined,
+      nationality: candidate.nationality || undefined,
+      currentLocation: candidate.currentLocation || undefined,
       technicalSkills: candidate.technicalSkills ? JSON.parse(candidate.technicalSkills) : [],
       languageProficiency: candidate.languageProficiency ? JSON.parse(candidate.languageProficiency) : {},
       experience: candidate.experience,
