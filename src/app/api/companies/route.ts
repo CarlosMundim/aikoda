@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
         companyName: body.companyName,
         industry: body.industry,
         companySize: body.companySize,
-        headquartersLocation: body.headquartersLocation,
+        // headquartersLocation: body.headquartersLocation, // Field may not exist in schema
         description: body.description,
         establishedYear: body.establishedYear,
         website: body.website,
