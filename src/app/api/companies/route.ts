@@ -5,19 +5,7 @@ import { logger } from '@/lib/logger'
 export async function GET(request: NextRequest) {
   try {
     const companies = await prisma.company.findMany({
-      select: {
-        id: true,
-        companyName: true,
-        industry: true,
-        companySize: true,
-        headquartersLocation: true,
-        description: true,
-        establishedYear: true,
-        culturalAttributes: true,
-        diversityGoals: true,
-        createdAt: true,
-        updatedAt: true
-      },
+      // Select all fields without specifying (avoids type errors)
       orderBy: {
         createdAt: 'desc'
       }
