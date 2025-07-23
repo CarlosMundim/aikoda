@@ -511,4 +511,4 @@ function generateCulturalTraining(score: number, candidate: CandidateJobData): s
   }
 }
 
-// Functions are already exported inline above
+// All exports completed inline - no duplicate exports
